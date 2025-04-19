@@ -1,37 +1,30 @@
-
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import StockSearch from '@/components/StockSearch';
 import StockCard from '@/components/StockCard';
 import TrendingStocks from '@/components/TrendingStocks';
 import { mockStocks } from '@/data/mockStocks';
-import { Frown } from 'lucide-react';
+import { Frown, Loader2 } from 'lucide-react';
+import { searchStocks, mockToRealStock } from '@/services/stockApi';
 
 const Index = () => {
-  const [selectedStockId, setSelectedStockId] = useState<string | null>("1"); // Default to first stock
-  const [searchResults, setSearchResults] = useState(mockStocks);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedStockId, setSelectedStockId] = useState<string | null>(null);
+
+  const { data: searchResults, isLoading } = useQuery({
+    queryKey: ['stocks', searchQuery],
+    queryFn: () => searchStocks(searchQuery),
+    enabled: searchQuery.length > 0,
+    select: (data) => data.map(mockToRealStock),
+    initialData: mockStocks,
+  });
 
   const selectedStock = selectedStockId 
     ? searchResults.find(stock => stock.id === selectedStockId) 
-    : null;
+    : searchResults[0];
 
   const handleSearch = (query: string) => {
-    if (!query.trim()) {
-      setSearchResults(mockStocks);
-      return;
-    }
-    
-    const filtered = mockStocks.filter(stock => 
-      stock.ticker.toLowerCase().includes(query.toLowerCase()) || 
-      stock.name.toLowerCase().includes(query.toLowerCase())
-    );
-    
-    setSearchResults(filtered);
-    
-    if (filtered.length > 0) {
-      setSelectedStockId(filtered[0].id);
-    } else {
-      setSelectedStockId(null);
-    }
+    setSearchQuery(query);
   };
 
   const handleSelectStock = (stockId: string) => {
@@ -59,7 +52,12 @@ const Index = () => {
       <main className="container max-w-7xl mx-auto py-6 px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            {selectedStock ? (
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center h-64 bg-finance-terminal rounded-lg border border-muted p-6">
+                <Loader2 className="h-12 w-12 text-muted-foreground animate-spin mb-4" />
+                <h3 className="text-xl font-bold text-white mb-2">Loading stocks...</h3>
+              </div>
+            ) : selectedStock ? (
               <StockCard stock={selectedStock} />
             ) : (
               <div className="flex flex-col items-center justify-center h-64 bg-finance-terminal rounded-lg border border-muted p-6 text-center">
