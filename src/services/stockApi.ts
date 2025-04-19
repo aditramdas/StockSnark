@@ -60,6 +60,7 @@ export const getStockQuote = async (symbol: string): Promise<StockQuote | null> 
   }
 };
 
+// Convert StockQuote to MockStock for UI display
 export const mockToRealStock = (quote: StockQuote): MockStock => {
   return {
     id: quote.symbol,
