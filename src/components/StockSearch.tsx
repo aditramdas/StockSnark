@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
 import { Search } from "lucide-react";
 
 interface StockSearchProps {
@@ -9,27 +8,59 @@ interface StockSearchProps {
 }
 
 const StockSearch: React.FC<StockSearchProps> = ({ onSearch }) => {
+  const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(searchQuery);
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    onSearch(value);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-full max-w-lg items-center space-x-2">
-      <Input
-        type="text"
-        placeholder="Search for a stock (e.g. APPL, TSLA)"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="bg-finance-terminal border-finance-terminal text-finance-text"
-      />
-      <Button type="submit" variant="secondary" className="bg-finance-terminal hover:bg-muted">
-        <Search className="h-4 w-4 mr-2" />
-        Search
-      </Button>
-    </form>
+    <div className="relative w-full max-w-lg">
+      <Command className="rounded-lg border border-input shadow-md">
+        <div className="flex items-center border-b px-3">
+          <Search className="h-4 w-4 shrink-0 opacity-50" />
+          <CommandInput
+            placeholder="Search stocks (e.g. AAPL, TSLA)"
+            value={searchQuery}
+            onValueChange={handleSearch}
+            className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+          />
+        </div>
+        {searchQuery.length > 0 && (
+          <CommandList>
+            <CommandEmpty>No stocks found.</CommandEmpty>
+            <CommandGroup heading="Suggestions">
+              <CommandItem
+                onSelect={() => {
+                  handleSearch('AAPL');
+                  setOpen(false);
+                }}
+              >
+                Apple Inc. (AAPL)
+              </CommandItem>
+              <CommandItem
+                onSelect={() => {
+                  handleSearch('MSFT');
+                  setOpen(false);
+                }}
+              >
+                Microsoft Corporation (MSFT)
+              </CommandItem>
+              <CommandItem
+                onSelect={() => {
+                  handleSearch('GOOGL');
+                  setOpen(false);
+                }}
+              >
+                Alphabet Inc. (GOOGL)
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
+        )}
+      </Command>
+    </div>
   );
 };
 
