@@ -75,3 +75,12 @@ export const mockToRealStock = (quote: StockQuote): MockStock => {
   };
 };
 
+// Convert MockStock array to StockQuote array for API compatibility
+export const convertMockStocksToQuotes = (mockStocks: MockStock[]): StockQuote[] => {
+  return mockStocks.map(stock => ({
+    symbol: stock.ticker,
+    price: stock.price,
+    change: stock.change,
+    changePercent: stock.changePercent
+  }));
+};

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import StockSearch from '@/components/StockSearch';
@@ -5,7 +6,7 @@ import StockCard from '@/components/StockCard';
 import TrendingStocks from '@/components/TrendingStocks';
 import { mockStocks } from '@/data/mockStocks';
 import { Frown, Loader2 } from 'lucide-react';
-import { searchStocks, mockToRealStock } from '@/services/stockApi';
+import { searchStocks, mockToRealStock, convertMockStocksToQuotes } from '@/services/stockApi';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,12 +17,15 @@ const Index = () => {
     queryFn: () => searchStocks(searchQuery),
     enabled: searchQuery.length > 0,
     select: (data) => data.map(mockToRealStock),
-    initialData: mockStocks,
+    initialData: convertMockStocksToQuotes(mockStocks),
   });
 
+  // Convert API results to MockStock format for UI components
+  const mockSearchResults = searchResults.map(mockToRealStock);
+  
   const selectedStock = selectedStockId 
-    ? searchResults.find(stock => stock.id === selectedStockId) 
-    : searchResults[0];
+    ? mockSearchResults.find(stock => stock.id === selectedStockId) 
+    : mockSearchResults[0];
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -84,7 +88,7 @@ const Index = () => {
           
           <div>
             <TrendingStocks 
-              stocks={searchResults} 
+              stocks={mockSearchResults} 
               onSelectStock={handleSelectStock} 
             />
             
