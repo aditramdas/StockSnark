@@ -15,7 +15,7 @@ export interface MockStock {
 export const mockStocks: MockStock[] = [
   {
     id: "1",
-    ticker: "APPL",
+    ticker: "AAPL", // Fixed the typo from APPL to AAPL
     name: "Apple Inc.",
     price: 172.62,
     change: -5.48,
@@ -72,5 +72,29 @@ export const mockStocks: MockStock[] = [
     newsHeadline: "GameStop reports 10th consecutive quarterly loss as 'meme stock' momentum fades",
     mockTweet: "Diamond hands turned to dust. Turns out HODLing a fundamentally broken business model wasn't the get-rich-quick scheme Reddit promised. #GameStopLoss",
     chartData: [18, 17.5, 17.2, 16.8, 16.2, 15.7, 15.2, 14.8, 14.37]
+  },
+  {
+    id: "6",
+    ticker: "MSFT",
+    name: "Microsoft Corporation",
+    price: 415.32,
+    change: -7.89,
+    changePercent: -1.87,
+    sarcasticReason: "Investors suddenly remembered that Windows updates still crash computers after 35 years of development. Revolutionary!",
+    newsHeadline: "Microsoft's new AI assistant accidentally insults CEO during demo",
+    mockTweet: "My Windows PC just spent 2 hours updating only to blue screen. Maybe Microsoft should spend less on AI and more on actually working software. #WindowsFail",
+    chartData: [425, 423, 420, 418, 417, 416, 414, 415, 415.32]
+  },
+  {
+    id: "7",
+    ticker: "GOOGL",
+    name: "Alphabet Inc.",
+    price: 172.98,
+    change: -5.32,
+    changePercent: -2.99,
+    sarcasticReason: "Turns out launching 17 messaging apps and killing every single one wasn't a sustainable business strategy. Who knew?",
+    newsHeadline: "Google shutters another product with millions of users, surprising absolutely no one",
+    mockTweet: "Google just killed another product I relied on. At this point, getting attached to Google products is like adopting pets from a serial killer. #GoogleGraveyard",
+    chartData: [180, 178, 177, 176, 175, 174, 173, 172.5, 172.98]
   }
 ];
