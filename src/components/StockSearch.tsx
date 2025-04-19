@@ -5,15 +5,25 @@ import { Search } from "lucide-react";
 
 interface StockSearchProps {
   onSearch: (query: string) => void;
+  onSelectStock?: (ticker: string) => void; // Add new prop for stock selection
 }
 
-const StockSearch: React.FC<StockSearchProps> = ({ onSearch }) => {
+const StockSearch: React.FC<StockSearchProps> = ({ onSearch, onSelectStock }) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
     onSearch(value);
+  };
+
+  const handleSelectStock = (ticker: string) => {
+    setSearchQuery(ticker);
+    onSearch(ticker);
+    if (onSelectStock) {
+      onSelectStock(ticker);
+    }
+    setOpen(false);
   };
 
   return (
@@ -33,26 +43,17 @@ const StockSearch: React.FC<StockSearchProps> = ({ onSearch }) => {
             <CommandEmpty>No stocks found.</CommandEmpty>
             <CommandGroup heading="Suggestions">
               <CommandItem
-                onSelect={() => {
-                  handleSearch('AAPL');
-                  setOpen(false);
-                }}
+                onSelect={() => handleSelectStock('AAPL')}
               >
                 Apple Inc. (AAPL)
               </CommandItem>
               <CommandItem
-                onSelect={() => {
-                  handleSearch('MSFT');
-                  setOpen(false);
-                }}
+                onSelect={() => handleSelectStock('MSFT')}
               >
                 Microsoft Corporation (MSFT)
               </CommandItem>
               <CommandItem
-                onSelect={() => {
-                  handleSearch('GOOGL');
-                  setOpen(false);
-                }}
+                onSelect={() => handleSelectStock('GOOGL')}
               >
                 Alphabet Inc. (GOOGL)
               </CommandItem>

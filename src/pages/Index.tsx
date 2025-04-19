@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import StockSearch from '@/components/StockSearch';
@@ -18,16 +19,18 @@ const Index = () => {
     initialData: convertMockStocksToQuotes(mockStocks),
   });
   
+  // Find the selected stock from mockStocks based on ticker
   const selectedStock = selectedStockId 
-    ? mockStocks.find(stock => stock.ticker === (selectedStockId)) 
+    ? mockStocks.find(stock => stock.ticker === selectedStockId) 
     : mockStocks[0];
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
 
-  const handleSelectStock = (stockId: string) => {
-    setSelectedStockId(stockId);
+  const handleSelectStock = (ticker: string) => {
+    console.log("Stock selected:", ticker);
+    setSelectedStockId(ticker);
   };
 
   return (
@@ -43,7 +46,10 @@ const Index = () => {
                 Where investments go to die, and we mock their demise
               </p>
             </div>
-            <StockSearch onSearch={handleSearch} />
+            <StockSearch 
+              onSearch={handleSearch} 
+              onSelectStock={handleSelectStock}
+            />
           </div>
         </div>
       </header>
