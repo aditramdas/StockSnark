@@ -1,5 +1,7 @@
 # Shady Stock Satirist
 
+**Shady Stock Satirist is a web app that generates satirical, AI-powered explanations for stock market moves. It mocks financial analysis with a blend of logic and humor, using real stock and news data, and Google Gemini AI to create witty, post-hoc reasons for why stocks rise or fall.**
+
 <!-- IMAGE PLACEHOLDER 1 -->
 
 ![Screenshot or Demo 1](./images/demo1.png)
