@@ -2,11 +2,11 @@
 
 <!-- IMAGE PLACEHOLDER 1 -->
 
-![Screenshot or Demo 1](./images/demo1.png)
+![Screenshot or Demo 1](https://github.com/aditramdas/StockSnark/blob/main/StockSnark1.png)
 
 <!-- IMAGE PLACEHOLDER 2 -->
 
-![Screenshot or Demo 2](./images/demo2.png)
+![Screenshot or Demo 2](https://github.com/aditramdas/StockSnark/blob/main/StockSnark2.png)
 
 ## Project info
 
