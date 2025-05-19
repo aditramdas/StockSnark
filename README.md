@@ -1,8 +1,58 @@
-# Welcome to your Lovable project
+# Shady Stock Satirist
+
+<!-- IMAGE PLACEHOLDER 1 -->
+
+![Screenshot or Demo 1](./images/demo1.png)
+
+<!-- IMAGE PLACEHOLDER 2 -->
+
+![Screenshot or Demo 2](./images/demo2.png)
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/d8db343f-009a-44a4-a36b-55bf312719cc
+
+## Features
+
+- Generates satirical explanations for stock movements using Google Gemini AI
+- Mocks post-hoc financial analysis with a blend of logic and humor
+- Uses real stock and news data (Alpha Vantage & Finnhub)
+- Modern UI with Vite, React, shadcn-ui, and Tailwind CSS
+
+## How Satire Generation Works
+
+This project uses the [Google Gemini API](https://ai.google.dev/) to generate satirical, post-hoc explanations for stock price movements. The prompt is carefully crafted so that:
+
+- If a company profit goes up by 4% but the stock goes down, the satire might say "Analysts expected 8% growth, so 4% is a disappointment."
+- The explanation always mocks the tendency to explain market moves after the fact.
+- The response is a single sentence, logical but funny, and under 100 characters.
+
+## Setup & Environment Variables
+
+1. **Clone the repository:**
+   ```sh
+   git clone <YOUR_GIT_URL>
+   cd <YOUR_PROJECT_NAME>
+   ```
+2. **Install dependencies:**
+   ```sh
+   npm install
+   ```
+3. **Configure environment variables:**
+   - Copy `.env.example` to `.env` if present, or create a `.env` file.
+   - Add your Gemini API key:
+     ```env
+     VITE_GEMINI_API_KEY=your-gemini-api-key-here
+     ```
+   - (Optional) Add your Alpha Vantage and Finnhub API keys for stock/news data:
+     ```env
+     VITE_ALPHA_VANTAGE_API_KEY=your-alpha-vantage-key
+     VITE_FINNHUB_API_KEY=your-finnhub-key
+     ```
+4. **Run the development server:**
+   ```sh
+   npm run dev
+   ```
 
 ## How can I edit this code?
 
