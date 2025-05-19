@@ -1,28 +1,53 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import StockSearch from '@/components/StockSearch';
 import StockCard from '@/components/StockCard';
 import TrendingStocks from '@/components/TrendingStocks';
 import { mockStocks } from '@/data/mockStocks';
 import { Frown, Loader2 } from 'lucide-react';
-import { searchStocks, convertMockStocksToQuotes, StockQuote } from '@/services/stockApi';
+import { searchStocks, convertMockStocksToQuotes, StockQuote, getStockDetails, StockDetails } from '@/services/stockApi';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStockId, setSelectedStockId] = useState<string | null>(null);
+  const [selectedStockId, setSelectedStockId] = useState<string | null>('AAPL');
 
-  const { data: searchResults, isLoading } = useQuery({
-    queryKey: ['stocks', searchQuery],
-    queryFn: () => searchStocks(searchQuery),
-    enabled: searchQuery.length > 0,
-    initialData: convertMockStocksToQuotes(mockStocks),
+  const { data: searchResults, isLoading: isSearching } = useQuery<StockQuote[]>({
+    queryKey: ['stockSearch', searchQuery],
+    queryFn: () => {
+      const trimmedQuery = searchQuery.trim();
+      if (trimmedQuery === '') {
+        return Promise.resolve([]);
+      }
+      return searchStocks(trimmedQuery).then(results => {
+        return results?.filter(result => 
+          result && 
+          typeof result.symbol === 'string' && 
+          result.symbol.trim() !== ''
+        ) || [];
+      });
+    },
+    enabled: !!searchQuery.trim(),
+    staleTime: 30000, // Cache results for 30 seconds
   });
   
-  // Find the selected stock from mockStocks based on ticker
-  const selectedStock = selectedStockId 
-    ? mockStocks.find(stock => stock.ticker === selectedStockId) 
-    : mockStocks[0];
+  const { 
+    data: selectedStockDetails, 
+    isLoading: isLoadingDetails,
+    error: detailsError,
+    refetch: refetchDetails
+  } = useQuery<StockDetails | null>({
+    queryKey: ['stockDetails', selectedStockId],
+    queryFn: () => selectedStockId ? getStockDetails(selectedStockId) : Promise.resolve(null),
+    enabled: !!selectedStockId,
+    staleTime: 30000, // Cache results for 30 seconds
+  });
+
+  // Only set default stock if we don't have one and we're not loading
+  useEffect(() => {
+    if (!selectedStockId && !isLoadingDetails) {
+      setSelectedStockId('AAPL');
+    }
+  }, [selectedStockId, isLoadingDetails]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -30,6 +55,7 @@ const Index = () => {
 
   const handleSelectStock = (ticker: string) => {
     console.log("Stock selected:", ticker);
+    setSearchQuery('');
     setSelectedStockId(ticker);
   };
 
@@ -46,9 +72,11 @@ const Index = () => {
                 Where investments go to die, and we mock their demise
               </p>
             </div>
-            <StockSearch 
-              onSearch={handleSearch} 
+            <StockSearch
+              onSearch={handleSearch}
               onSelectStock={handleSelectStock}
+              results={searchResults || []}
+              isLoading={isSearching}
             />
           </div>
         </div>
@@ -57,19 +85,27 @@ const Index = () => {
       <main className="container max-w-7xl mx-auto py-6 px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            {isLoading ? (
+            {isLoadingDetails ? (
               <div className="flex flex-col items-center justify-center h-64 bg-finance-terminal rounded-lg border border-muted p-6">
                 <Loader2 className="h-12 w-12 text-muted-foreground animate-spin mb-4" />
-                <h3 className="text-xl font-bold text-white mb-2">Loading stocks...</h3>
+                <h3 className="text-xl font-bold text-white mb-2">Loading Stock Details...</h3>
               </div>
-            ) : selectedStock ? (
-              <StockCard stock={selectedStock} />
+            ) : detailsError ? (
+              <div className="flex flex-col items-center justify-center h-64 bg-finance-terminal rounded-lg border border-muted p-6 text-center">
+                <Frown className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-xl font-bold text-red-500 mb-2">Error Loading Data</h3>
+                <p className="text-muted-foreground">
+                  Could not load details for {selectedStockId}. Maybe the market broke?
+                </p>
+              </div>
+            ) : selectedStockDetails ? (
+              <StockCard stock={selectedStockDetails} />
             ) : (
               <div className="flex flex-col items-center justify-center h-64 bg-finance-terminal rounded-lg border border-muted p-6 text-center">
                 <Frown className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-xl font-bold text-white mb-2">No stocks found</h3>
+                <h3 className="text-xl font-bold text-white mb-2">No Stock Selected</h3>
                 <p className="text-muted-foreground">
-                  Even our sarcasm has limits. Try another search term.
+                  Use the search bar above to find a stock to mock.
                 </p>
               </div>
             )}

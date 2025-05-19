@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingDown } from "lucide-react";
@@ -27,7 +26,7 @@ const TrendingStocks: React.FC<TrendingStocksProps> = ({ stocks, onSelectStock }
             <li 
               key={stock.id} 
               className="p-3 hover:bg-muted cursor-pointer transition-colors"
-              onClick={() => onSelectStock(stock.id)}
+              onClick={() => onSelectStock(stock.ticker)}
             >
               <div className="flex justify-between items-center">
                 <div>
